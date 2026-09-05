@@ -4,7 +4,7 @@ FROM python:3.11-slim-bookworm
 RUN apt-get update && apt-get install -y \
     git gcc g++ make pkg-config \
     libxml2-dev libxslt1-dev zlib1g-dev gettext curl \
-    mariadb-client libmysqlclient-dev default-libmysqlclient-dev \
+    mariadb-client libmariadb-dev-compat libmariadb-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js
