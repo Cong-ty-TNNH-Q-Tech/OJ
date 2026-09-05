@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dmoj_password}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -23,7 +23,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redis-data:/data
+      - redis-data:/data
 
   web:
     build: .
@@ -42,6 +42,7 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ROLE=web
+      - DJANGO_SETTINGS_MODULE=dmoj.settings
     depends_on:
       db:
         condition: service_healthy
@@ -60,9 +61,14 @@ services:
       - DB_PASSWORD=${MYSQL_PASSWORD:-dmoj_password}
       - DB_NAME=${MYSQL_DATABASE:-dmoj}
       - REDIS_HOST=redis
+      - DJANGO_SETTINGS_MODULE=dmoj.settings
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
     command: celery -A dmoj worker -l info --concurrency=2
+
+volumes:
+  mysql-data:
+  redis-data:
