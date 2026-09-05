@@ -44,6 +44,13 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ROLE=web
       - DJANGO_SETTINGS_MODULE=dmoj.settings
+      - EMAIL_BACKEND=${EMAIL_BACKEND}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
     depends_on:
       db:
         condition: service_healthy
@@ -64,6 +71,13 @@ services:
       - DB_NAME=${MYSQL_DATABASE:-dmoj}
       - REDIS_HOST=redis
       - DJANGO_SETTINGS_MODULE=dmoj.settings
+      - EMAIL_BACKEND=${EMAIL_BACKEND}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
     depends_on:
       db:
         condition: service_healthy
