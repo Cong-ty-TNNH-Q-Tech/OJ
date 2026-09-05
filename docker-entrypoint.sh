@@ -2,6 +2,10 @@
 set -e
 
 if [ "$ROLE" = "web" ]; then
+    echo "Updating submodules..."
+    git config --global --add safe.directory /app || true
+    git submodule update --init --recursive || true
+
     echo "Building styles..."
     sed -i 's/\r$//' make_style.sh
     chmod +x make_style.sh
@@ -16,6 +20,9 @@ if [ "$ROLE" = "web" ]; then
 
     echo "Applying database migrations..."
     python manage.py migrate --noinput
+
+    echo "Loading initial data..."
+    python manage.py loaddata language_small demo || true
 
     if [ -n "$ADMIN_USERNAME" ] && [ -n "$ADMIN_PASSWORD" ]; then
         echo "Creating superuser if it doesn't exist..."
