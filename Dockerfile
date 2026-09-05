@@ -27,6 +27,9 @@ RUN npm install
 # Copy project source code
 COPY . .
 
+# Fix line endings for make_style.sh
+RUN sed -i 's/\r$//' make_style.sh && chmod +x make_style.sh
+
 # Collect static files and compile messages
 # (We need a mock local_settings.py or dummy db settings to run manage.py without db connection during build)
 # Instead, we will do this at entrypoint or handle gracefully. 
