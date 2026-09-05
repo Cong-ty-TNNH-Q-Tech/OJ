@@ -1,0 +1,58 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dmoj}
+      MYSQL_USER: ${MYSQL_USER:-dmoj}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dmoj_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+
+  web:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${MYSQL_USER:-dmoj}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-dmoj_password}
+      - DB_NAME=${MYSQL_DATABASE:-dmoj}
+      - REDIS_HOST=redis
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    depends_on:
+      - db
+      - redis
+    command: python manage.py runserver 0.0.0.0:8000
+
+  celery:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_USER=${MYSQL_USER:-dmoj}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-dmoj_password}
+      - DB_NAME=${MYSQL_DATABASE:-dmoj}
+      - REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+    command: celery -A dmoj worker -l info --concurrency=2
