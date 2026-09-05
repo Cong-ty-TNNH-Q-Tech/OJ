@@ -2,6 +2,11 @@
 set -e
 
 if [ "$ROLE" = "web" ]; then
+    echo "Building styles..."
+    sed -i 's/\r$//' make_style.sh
+    chmod +x make_style.sh
+    ./make_style.sh
+
     echo "Running collectstatic..."
     python manage.py collectstatic --noinput
 
