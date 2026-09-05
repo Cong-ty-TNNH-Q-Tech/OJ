@@ -47,3 +47,4 @@ resources/blog-post.css
 resources/theme-toggle.css
 .DS_Store
 .review/
+.env
