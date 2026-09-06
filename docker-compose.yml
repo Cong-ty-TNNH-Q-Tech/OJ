@@ -121,14 +121,14 @@ services:
     volumes:
       - problems:/problems
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      - ./judge.yml:/judge.yml:ro
+      - ./judge.yml:/judge/judge.yml:ro
     environment:
       - BRIDGE_ADDRESS=bridge
       - JUDGE_NAME=judge1
       - JUDGE_KEY=${JUDGE_KEY:-secret_judge_key_123}
     depends_on:
       - bridge
-    command: run -p 9999 -s -c /judge.yml bridge judge1 $${JUDGE_KEY:-secret_judge_key_123}
+    command: -p 9999 -s bridge judge1 ${JUDGE_KEY:-secret_judge_key_123}
 
 volumes:
   mysql-data:
