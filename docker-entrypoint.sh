@@ -44,6 +44,13 @@ judge.is_blocked = False
 judge.is_disabled = False
 judge.save()
 print('Judge judge1 created/updated successfully.')
+
+judge_small, created = Judge.objects.get_or_create(name='judge-small')
+judge_small.auth_key = os.environ.get('JUDGE_SMALL_KEY', 'secret_judge_key_123')
+judge_small.is_blocked = False
+judge_small.is_disabled = False
+judge_small.save()
+print('Judge judge-small created/updated successfully.')
 EOF
     fi
 
