@@ -61,3 +61,6 @@ SITE_NAME = os.environ.get('SITE_NAME', 'ICTU JUDGE')
 SITE_LONG_NAME = os.environ.get('SITE_LONG_NAME', 'ICTU JUDGE')
 
 
+
+DMOJ_CANONICAL = os.environ.get('DMOJ_CANONICAL', 'localhost:5000')
+SITE_FULL_URL = 'http://' + DMOJ_CANONICAL
