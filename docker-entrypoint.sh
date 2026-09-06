@@ -22,7 +22,7 @@ if [ "$ROLE" = "web" ]; then
     python manage.py migrate --noinput
 
     echo "Loading initial data..."
-    python manage.py loaddata language_small demo || true
+    python manage.py loaddata language_small demo navbar || true
 
     if [ -n "$ADMIN_USERNAME" ] && [ -n "$ADMIN_PASSWORD" ]; then
         echo "Creating superuser if it doesn't exist..."
