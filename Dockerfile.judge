@@ -3,13 +3,12 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies: GCC 11 (supports C++20), Java 17 headless, Python 3.11
-# Use openjdk-17-jre-headless instead of jdk to avoid pulling in ~500MB of GUI libraries
 RUN apt-get update && apt-get install -y \
     gcc-11 g++-11 \
     python3.11 python3.11-dev python3.11-venv python3-pip \
     python2.7 \
     openjdk-17-jre-headless \
-    make cmake git curl \
+    make git curl \
     libseccomp-dev \
     binutils \
     perl \
@@ -18,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     && update-alternatives --install /usr/bin/python2 python2 /usr/bin/python2.7 60 \
     && rm -rf /var/lib/apt/lists/*
 
+# Create a dedicated non-root user for the judge
+RUN useradd -m -s /bin/bash judge
+
 # Create a virtual environment using Python 3.11 specifically
 RUN python3.11 -m venv /judge-env
 ENV PATH="/judge-env/bin:$PATH"
@@ -25,6 +27,12 @@ ENV PATH="/judge-env/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir cython
 RUN pip install --no-cache-dir dmoj
+
+# Give judge user ownership of the venv
+RUN chown -R judge:judge /judge-env
+
+# Switch to judge user
+USER judge
 
 # Override the default entrypoint
 ENTRYPOINT ["dmoj"]
