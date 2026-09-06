@@ -2,19 +2,20 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies: GCC 11 (supports C++20), Java 17, Python 3.11
+# Install system dependencies: GCC 11 (supports C++20), Java 17 headless, Python 3.11
+# Use openjdk-17-jre-headless instead of jdk to avoid pulling in ~500MB of GUI libraries
 RUN apt-get update && apt-get install -y \
-    gcc g++ gcc-11 g++-11 \
+    gcc-11 g++-11 \
     python3.11 python3.11-dev python3.11-venv python3-pip \
-    python2 python-is-python3 \
-    openjdk-17-jdk \
+    python2.7 \
+    openjdk-17-jre-headless \
     make cmake git curl \
     libseccomp-dev \
     binutils \
-    perl ruby \
-    nodejs npm \
+    perl \
     && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
     && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 60 \
+    && update-alternatives --install /usr/bin/python2 python2 /usr/bin/python2.7 60 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create a virtual environment using Python 3.11 specifically
