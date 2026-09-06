@@ -24,12 +24,15 @@ RUN useradd -m -s /bin/bash judge
 RUN python3.11 -m venv /judge-env
 ENV PATH="/judge-env/bin:$PATH"
 
+# Create empty .dmojrc to prevent FileNotFoundError in dmoj 4.1.0
+RUN touch /home/judge/.dmojrc
+
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir cython
 RUN pip install --no-cache-dir dmoj
 
-# Give judge user ownership of the venv
-RUN chown -R judge:judge /judge-env
+# Give judge user ownership of the venv and .dmojrc
+RUN chown -R judge:judge /judge-env && chown judge:judge /home/judge/.dmojrc
 
 # Switch to judge user
 USER judge
