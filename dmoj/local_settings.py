@@ -76,3 +76,4 @@ DMOJ_PROBLEM_DATA_ROOT = '/problems'
 
 # Bridge config
 BRIDGED_JUDGE_ADDRESS = [('0.0.0.0', 9999)]
+BRIDGED_DJANGO_CONNECT = ('bridge', 9999)
