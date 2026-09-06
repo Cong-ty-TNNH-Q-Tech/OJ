@@ -17,6 +17,16 @@ RUN apt-get update && apt-get install -y \
     && update-alternatives --install /usr/bin/python2 python2 /usr/bin/python2.7 60 \
     && rm -rf /var/lib/apt/lists/*
 
+# Fix Java symlinks for DMOJ sandbox because it doesn't mount /etc/java-17-openjdk
+RUN cd /usr/lib/jvm/java-17-openjdk-amd64 && \
+    for file in $(find . -type l); do \
+        target=$(readlink -f $file); \
+        if echo "$target" | grep -q "^/etc/"; then \
+            rm $file; \
+            cp -r $target $file; \
+        fi; \
+    done || true
+
 # Create a dedicated non-root user for the judge
 RUN useradd -m -s /bin/bash judge
 
