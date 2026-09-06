@@ -1,14 +1,3 @@
 problem_storage_root:
   - /problems
-runtime:
-  as_x64: /usr/bin/as
-  ld_x64: /usr/bin/ld
-  sed: /bin/sed
-  awk: /usr/bin/awk
-  gcc: /usr/bin/gcc
-  g++: /usr/bin/g++
-  g++11: /usr/bin/g++
-  python: /usr/bin/python
-  python3: /usr/bin/python3
-  perl: /usr/bin/perl
-  ruby21: /usr/bin/ruby
+

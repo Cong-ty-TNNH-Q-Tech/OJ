@@ -115,7 +115,9 @@ services:
     command: python manage.py runbridged
 
   judge:
-    image: dmoj/judge-small:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.judge
     restart: always
     privileged: true
     volumes:
