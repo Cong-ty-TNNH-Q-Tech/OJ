@@ -67,3 +67,6 @@ SITE_FULL_URL = 'http://' + DMOJ_CANONICAL
 
 # Problem data mapping
 DMOJ_PROBLEM_DATA_ROOT = '/problems'
+
+# Bridge config
+BRIDGED_JUDGE_ADDRESS = [('0.0.0.0', 9999)]
