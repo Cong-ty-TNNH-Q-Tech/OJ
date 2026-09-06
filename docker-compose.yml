@@ -145,7 +145,7 @@ services:
     depends_on:
       bridge:
         condition: service_started
-    command: -p 9999 bridge judge1 ${JUDGE_KEY:-secret_judge_key_123}
+    command: -c /judge/judge.yml -p 9999 bridge judge1 ${JUDGE_KEY:-secret_judge_key_123}
 
 volumes:
   mysql-data:
