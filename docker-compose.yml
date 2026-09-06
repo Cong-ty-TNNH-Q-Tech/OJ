@@ -31,6 +31,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - problems:/problems
     ports:
       - "${WEB_PORT:-8000}:8000"
     environment:
@@ -66,6 +67,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - problems:/problems
     environment:
       - DB_HOST=db
       - DB_USER=${MYSQL_USER:-dmoj}
@@ -89,6 +91,45 @@ services:
         condition: service_started
     command: celery -A dmoj worker -l info --concurrency=2
 
+  bridge:
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - problems:/problems
+    ports:
+      - "9999:9999"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${MYSQL_USER:-dmoj}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-dmoj_password}
+      - DB_NAME=${MYSQL_DATABASE:-dmoj}
+      - REDIS_HOST=redis
+      - DJANGO_SETTINGS_MODULE=dmoj.settings
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    command: python manage.py runbridged
+
+  judge:
+    image: dmoj/judge-small:latest
+    restart: always
+    privileged: true
+    volumes:
+      - problems:/problems
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    environment:
+      - BRIDGE_ADDRESS=bridge
+      - JUDGE_NAME=judge1
+      - JUDGE_KEY=${JUDGE_KEY:-secret_judge_key_123}
+    depends_on:
+      - bridge
+    command: run -p15001 -s bridge 9999 judge1 $${JUDGE_KEY:-secret_judge_key_123}
+
 volumes:
   mysql-data:
   redis-data:
+  problems:
