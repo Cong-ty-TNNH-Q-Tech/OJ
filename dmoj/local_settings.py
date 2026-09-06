@@ -63,7 +63,13 @@ SITE_LONG_NAME = os.environ.get('SITE_LONG_NAME', 'ICTU JUDGE')
 
 
 DMOJ_CANONICAL = os.environ.get('DMOJ_CANONICAL', 'localhost:5000')
-SITE_FULL_URL = 'http://' + DMOJ_CANONICAL
+SITE_FULL_URL = ('https://' if 'https' in os.environ.get('CSRF_TRUSTED_ORIGINS', '') else 'http://') + DMOJ_CANONICAL
+
+csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if csrf_trusted:
+    CSRF_TRUSTED_ORIGINS = csrf_trusted.split(',')
+else:
+    CSRF_TRUSTED_ORIGINS = [f'https://{DMOJ_CANONICAL}', f'http://{DMOJ_CANONICAL}']
 
 # Problem data mapping
 DMOJ_PROBLEM_DATA_ROOT = '/problems'
