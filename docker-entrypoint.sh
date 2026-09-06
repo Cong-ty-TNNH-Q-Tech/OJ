@@ -25,19 +25,25 @@ if [ "$ROLE" = "web" ]; then
     python manage.py loaddata language_small demo navbar || true
 
     if [ -n "$ADMIN_USERNAME" ] && [ -n "$ADMIN_PASSWORD" ]; then
-        echo "Creating superuser and judge if they don't exist..."
+        echo "Creating/updating superuser and judge from env variables..."
         cat <<EOF | python manage.py shell
 from django.contrib.auth import get_user_model
 from judge.models import Judge
+import os
 User = get_user_model()
-if not User.objects.filter(username='$ADMIN_USERNAME').exists():
-    User.objects.create_superuser('$ADMIN_USERNAME', '$ADMIN_EMAIL', '$ADMIN_PASSWORD')
-    print('Superuser created successfully.')
+user, created = User.objects.get_or_create(username='$ADMIN_USERNAME', defaults={'email': '$ADMIN_EMAIL'})
+user.set_password('$ADMIN_PASSWORD')
+user.is_superuser = True
+user.is_staff = True
+user.save()
+print('Superuser created/updated successfully.')
 
-if not Judge.objects.filter(name='judge1').exists():
-    import os
-    Judge.objects.create(name='judge1', auth_key=os.environ.get('JUDGE_KEY', 'secret_judge_key_123'), is_blocked=False, is_disabled=False, ping=0, load=0)
-    print('Judge judge1 created successfully.')
+judge, created = Judge.objects.get_or_create(name='judge1')
+judge.auth_key = os.environ.get('JUDGE_KEY', 'secret_judge_key_123')
+judge.is_blocked = False
+judge.is_disabled = False
+judge.save()
+print('Judge judge1 created/updated successfully.')
 EOF
     fi
 
