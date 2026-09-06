@@ -40,6 +40,23 @@ if not Judge.objects.filter(name='judge1').exists():
     print('Judge judge1 created successfully.')
 EOF
     fi
+
+    echo "Updating Site domain..."
+    cat <<EOF | python manage.py shell
+from django.contrib.sites.models import Site
+import os
+try:
+    s, created = Site.objects.get_or_create(id=1)
+    canonical = os.environ.get('DMOJ_CANONICAL', 'localhost:5000')
+    site_name = os.environ.get('SITE_NAME', 'ICTU JUDGE')
+    if s.domain != canonical or s.name != site_name:
+        s.domain = canonical
+        s.name = site_name
+        s.save()
+        print(f"Site domain updated to {canonical}")
+except Exception as e:
+    print(f"Failed to update Site domain: {e}")
+EOF
 fi
 
 echo "Starting command: $@"
