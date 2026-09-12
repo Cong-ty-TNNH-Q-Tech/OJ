@@ -47,3 +47,9 @@ resources/theme-toggle.css
 .DS_Store
 .review/
 .env
+/mysql-data/*
+!/mysql-data/.gitkeep
+/redis-data/*
+!/redis-data/.gitkeep
+/problems/*
+!/problems/.gitkeep
